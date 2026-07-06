@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reports - HVF App</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <button class="menu-toggle-btn" id="sidebarToggle">☰ Menu</button>
+
+  <div class="sidebar" id="appSidebar">
+    <div class="logo"><img src="images/HVF-Logo.png" alt="HVF Logo"></div>
+    <ul class="menu">
+      <li><a href="home.php">Home</a></li>
+      <li><a href="customers.html">Customers</a></li>
+      <li><a href="inventory.html">Inventory</a></li>
+      <li><a href="orders.html">Orders</a></li>
+      <li><a href="invoices.html">Invoices</a></li>
+      <li><a href="reports.html" class="active">Reports</a></li>
+      <li><a href="finance.php">Finance</a></li>
+    </ul>
+  </div>
+
+  <div class="main-content">
+    <div class="vertical-layout">
+      
+      <!-- Summary Metrics Grid Rows Layout -->
+      <div class="dashboard-cards" style="margin-top:0;">
+        <div class="card font-weight-bold">
+          <h3 style="margin:0; color:gray; font-size:0.85rem; text-transform:uppercase;">Total Invoiced Sales</h3>
+          <p style="margin:5px 0 0 0; font-size:1.6rem; color:#2e7d32;">R<span id="reportTotalSales">0.00</span></p>
+        </div>
+        <div class="card">
+          <h3 style="margin:0; color:gray; font-size:0.85rem; text-transform:uppercase;">Invoices Issued</h3>
+          <p style="margin:5px 0 0 0; font-size:1.6rem; color:#2e7d32;"><span id="reportInvoiceCount">0</span></p>
+        </div>
+        <div class="card">
+          <h3 style="margin:0; color:gray; font-size:0.85rem; text-transform:uppercase;">Strains Logged</h3>
+          <p style="margin:5px 0 0 0; font-size:1.6rem; color:#2e7d32;"><span id="reportStrainCount">0</span></p>
+        </div>
+      </div>
+
+      <!-- Visual Data Breakdown Breakdown Grid Lists Component Summary -->
+      <div class="card table-card">
+        <h2>Product Category Sales Analysis</h2>
+        <div class="table-wrap">
+          <table id="categoryReportTable">
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th>Grams Sold Overview</th>
+                <th>Gross Income Contributions</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

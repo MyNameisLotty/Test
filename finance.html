@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Finance Tracker</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo"><img src="images/HVF-Logo.png" alt="HVF Logo"></div>
+    <ul class="menu">
+      <li><a href="home.html">Home</a></li>
+      <li><a href="customers.html">Customers</a></li>
+      <li><a href="inventory.html">Inventory</a></li>
+      <li><a href="orders.html">Orders</a></li>
+      <li><a href="invoices.html">Invoices</a></li>
+      <li><a href="reports.html">Reports</a></li>
+      <li><a href="finance.html" class="active">Finance</a></li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="card">
+      <h2>Add Finance Entry</h2>
+      <form id="financeForm">
+        <input type="hidden" id="editIndex"> <!-- hidden field for editing -->
+
+        <label for="financeDate">Date</label>
+        <input type="date" id="financeDate" required>
+
+        <label for="financeType">Type</label>
+        <select id="financeType" required>
+          <option value="Income">Income</option>
+          <option value="Expense">Expense</option>
+        </select>
+
+        <label for="financeAmount">Amount (R)</label>
+        <input type="number" id="financeAmount" required>
+
+        <label for="financeNotes">Notes</label>
+        <textarea id="financeNotes"></textarea>
+
+        <button type="submit">Save Entry</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>Finance Records</h2>
+      <table id="financeTable">
+        <thead>
+          <tr><th>Date</th><th>Type</th><th>Amount (R)</th><th>Notes</th><th>Edit</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    let finance = JSON.parse(localStorage.getItem("finance")) || [];
+    const financeForm = document.getElementById("financeForm");
+    const financeTableBody = document.querySelector("#financeTable tbody");
+    const editIndex = document.getElementById("editIndex");
+
+    function renderFinance() {
+      financeTableBody.innerHTML = "";
+      finance.forEach((entry, i) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${entry.date}</td>
+          <td>${entry.type}</td>
+          <td>R ${entry.amount}</td>
+          <td>${entry.notes || ""}</td>
+          <td><button onclick="editFinance(${i})">Edit</button></td>
+        `;
+        financeTableBody.appendChild(row);
+      });
+    }
+
+    function editFinance(i) {
+      const entry = finance[i];
+      document.getElementById("financeDate").value = entry.date;
+      document.getElementById("financeType").value = entry.type;
+      document.getElementById("financeAmount").value = entry.amount;
+      document.getElementById("financeNotes").value = entry.notes || "";
+      editIndex.value = i;
+    }
+
+    financeForm.addEventListener("submit", e => {
+      e.preventDefault();
+      const entry = {
+        date: document.getElementById("financeDate").value,
+        type: document.getElementById("financeType").value,
+        amount: document.getElementById("financeAmount").value,
+        notes: document.getElementById("financeNotes").value
+      };
+
+      if (editIndex.value) {
+        finance[editIndex.value] = entry; // update existing
+        editIndex.value = "";
+      } else {
+        finance.push(entry); // add new
+      }
+
+      localStorage.setItem("finance", JSON.stringify(finance));
+      financeForm.reset();
+      renderFinance();
+    });
+
+    renderFinance();
+  </script>
+</body>
+</html>

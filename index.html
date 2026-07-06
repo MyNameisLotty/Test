@@ -3,56 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Page</title>
-    <style>
-        body {
-            background:rgb(58,58, 58);
-            color: white;
-            font-family: Helvetica Neue, Arial, Helvetica, sans-serif;
-
-        }
-       h1 {
-        background: black;
-        color: rgb(17, 205, 238);}
-
-        h2 {
-            color: gray;
-        }
-            
-        button {
-            background: grey;
-            border: none;
-            color: white;
-            border-radius: 12px;
-            padding: 12px 24px;
-        }
-       
-    </style>
+    <title>HVF Login</title>
+    <link rel="stylesheet" href="/hvf-app/css/style.css">
 </head>
 
 <body>
-    <h1>My Webpage</h1>
-    <h2>About Me</h2>
-    <p>
-        I’m a woman in my 50s who has grown into this stage of life with a deep 
-        appreciation for the journey that brought me here. 
-        My <em>family</em> is at the heart of who I am, and the love and laughter 
-        we share keep me grounded and grateful. I’ve faced challenges, celebrated milestones, 
-        and learned to embrace both the ups and downs with resilience. 
-        These experiences have shaped me into someone who values honesty, kindness, 
-        and the simple joy of being present in the moment.
 
-       Beyond family, I find fulfillment in the little things that make life 
-       rich — curling up with a good book, exploring new places, or enjoying 
-       quiet evenings outdoors. I love discovering new skills and hobbies, and I believe 
-       it’s never too late to grow or reinvent yourself. At this point in my life, 
-       I see myself as someone who can share wisdom while still being curious enough 
-       to keep learning. My story is about <strong>balance</strong>: nurturing the people I love, 
-       pursuing passions that inspire me, and savoring the everyday beauty that 
-       surrounds me.
-    </p>
-    <button>Click here to learn more</button>
+<!-- MAIN CONTENT -->
+<div class="main-content">
 
-    
+    <div class="card">
+        <h2>Login</h2>
+
+        <form id="loginForm" action="login.php" method="post">
+            <label>Username</label>
+            <input type="text" name="username" required>
+
+            <label>Password</label>
+            <input type="password" name="password" required>
+
+            <button type="submit">Login</button>
+            <button type="button" id="registerBtn">Register</button>
+        </form>
+    </div>
+
+</div>
+
+<!-- REGISTER POPUP -->
+<div id="registerPopup" class="popup" style="display:none;">
+    <div class="popup-content">
+
+        <span class="close" style="cursor:pointer;">&times;</span>
+
+        <form action="register.php" method="post">
+            <h2>Register</h2>
+
+            <label>Username</label>
+            <input type="text" name="newUser" required>
+
+            <label>Password</label>
+            <input type="password" name="newPass" required>
+
+            <button type="submit">Create Account</button>
+        </form>
+
+    </div>
+</div>
+
+<!-- JAVASCRIPT (ONLY ONE SCRIPT BLOCK) -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const popup = document.getElementById("registerPopup");
+    const btn = document.getElementById("registerBtn");
+    const closeBtn = document.querySelector(".close");
+
+    // Safety check
+    if (!popup || !btn) {
+        console.error("Missing register elements");
+        return;
+    }
+
+    // Open popup
+    btn.addEventListener("click", function () {
+        popup.style.display = "block";
+    });
+
+    // Close popup
+    if (closeBtn) {
+        closeBtn.addEventListener("click", function () {
+            popup.style.display = "none";
+        });
+    }
+
+    // Close when clicking outside box
+    window.addEventListener("click", function (e) {
+        if (e.target === popup) {
+            popup.style.display = "none";
+        }
+    });
+
+});
+</script>
+
 </body>
 </html>
