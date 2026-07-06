@@ -30,13 +30,50 @@ a:hover{ text-decoration:underline; }
     z-index:1000;
     transition: left 0.3s ease;
 }
-.logo-area{ text-align:center; padding:22px 20px 16px; }
-.logo-area img{ width:200px; max-width:100%; display:block; margin:0 auto; }
 
-.sidebar ul{ list-style:none; }
-.sidebar ul li{ border-bottom:1px solid #294132; }
-.sidebar ul li a{ color:#f6f9f2; text-decoration:none; display:block; padding:15px; }
-.sidebar ul li a:hover{ background:#2f5a37; }
+/* =========================
+   SIDEBAR LOGO - FIXED
+========================= */
+.logo-area {
+    text-align: center;
+    padding: 22px 20px 16px;
+    border-bottom: 1px solid #294132;
+}
+
+.logo-area img {
+    width: 170px !important;
+    max-width: 170px !important;
+    height: auto !important;
+    display: block;
+    margin: 0 auto;
+    object-fit: contain;
+    border-radius: 6px;
+}
+
+/* Extra strong protection */
+.sidebar img,
+.logo-area img,
+.logo {
+    max-width: 170px !important;
+    width: 170px !important;
+    height: auto !important;
+}
+
+.sidebar ul{ 
+    list-style:none; 
+}
+.sidebar ul li{ 
+    border-bottom:1px solid #294132; 
+}
+.sidebar ul li a{ 
+    color:#f6f9f2; 
+    text-decoration:none; 
+    display:block; 
+    padding:15px; 
+}
+.sidebar ul li a:hover{ 
+    background:#2f5a37; 
+}
 
 /* =========================
    MAIN LAYOUT
