@@ -13,14 +13,19 @@ $content = $content ?? '';
     <!-- Global Styles -->
     <link rel="stylesheet" href="/hvf-app/css/style.css">
     <link rel="icon" type="image/x-icon" href="/hvf-app/images/favicon-new.ico?v=1">
-    <style>
-/* Strong logo protection */
-.logo-area img,
-.sidebar img {
-    max-width: 180px !important;
-    width: auto !important;
+   
+  <style>
+/* Absolute fix to constrain ANY image inside the sidebar layout */
+.sidebar img,
+aside img,
+[class*="sidebar"] img,
+.logo-area img {
+    max-width: 150px !important;
+    width: 100% !important;
     height: auto !important;
-    object-fit: contain;
+    object-fit: contain !important;
+    display: block;
+    margin: 10px auto;
 }
 
 /* Ensure sidebar doesn't collapse */
