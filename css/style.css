@@ -32,7 +32,7 @@ a:hover{ text-decoration:underline; }
 }
 .logo-area{ text-align:center; padding:22px 20px 16px; }
 .logo-area img{ width:200px; max-width:100%; display:block; margin:0 auto; }
-.logo-area h2{ display:none; }
+
 .sidebar ul{ list-style:none; }
 .sidebar ul li{ border-bottom:1px solid #294132; }
 .sidebar ul li a{ color:#f6f9f2; text-decoration:none; display:block; padding:15px; }

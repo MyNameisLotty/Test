@@ -13,6 +13,22 @@ $content = $content ?? '';
     <!-- Global Styles -->
     <link rel="stylesheet" href="/hvf-app/css/style.css">
     <link rel="icon" type="image/x-icon" href="/hvf-app/images/favicon-new.ico?v=1">
+    <style>
+/* Strong logo protection */
+.logo-area img,
+.sidebar img {
+    max-width: 180px !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain;
+}
+
+/* Ensure sidebar doesn't collapse */
+.sidebar {
+    flex-shrink: 0;
+    min-width: 250px;
+}
+</style>
 </head>
 
 <body>

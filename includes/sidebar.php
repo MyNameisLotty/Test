@@ -1,7 +1,7 @@
 <div class="sidebar" id="sidebar">
     <div class="logo-area">
         <img src="/hvf-app/images/HVF-Logo.png" alt="HVF Logo">
-        <h2>HVF</h2>
+        
     </div>
 
     <ul>

@@ -1,6 +1,7 @@
 <?php
 include __DIR__ . '/../includes/db.php';
 include __DIR__ . '/../includes/functions.php';
+include __DIR__ . '/../includes/sidebar.php';
 
 ob_start();
 
