@@ -1,14 +1,93 @@
 <?php
 include __DIR__ . '/../includes/db.php';
 include __DIR__ . '/../includes/functions.php';
-include __DIR__ . '/../includes/sidebar.php';
 
 ob_start();
 
 $clients = $conn->query("SELECT * FROM clients ORDER BY client_name ASC");
-$stockItems = $conn->query("\n    SELECT s.id, s.product_name, s.strain_code, s.quantity, s.selling_price, c.name AS category_name\n    FROM stock s\n    LEFT JOIN stock_categories c ON s.category_id = c.id\n    ORDER BY s.strain_code, s.product_name\n");
-$orders = $conn->query("\n    SELECT o.*, c.client_name, s.strain_code, s.product_name\n    FROM orders o\n    JOIN clients c ON o.client_id = c.id\n    LEFT JOIN stock s ON s.id = o.stock_id\n    ORDER BY o.order_number DESC, COALESCE(o.order_date, DATE(o.created_at)) DESC, o.id DESC\n");
+$stockItems = $conn->query("
+    SELECT s.id, s.product_name, s.strain_code, s.quantity, s.selling_price, c.name AS category_name
+    FROM stock s
+    LEFT JOIN stock_categories c ON s.category_id = c.id
+    ORDER BY s.strain_code, s.product_name
+");
+
+/* FIXED QUERY: We use SUBSTRING_INDEX to drop the trailing item suffix (-1, -2).
+  This forces rows sharing the same timestamp batch code to combine as ONE order group!
+*/
+$orders = $conn->query("
+    SELECT 
+        o.id,
+        o.client_id,
+        o.order_date,
+        o.description,
+        o.quantity,
+        o.total,
+        o.status,
+        SUBSTRING_INDEX(o.order_number, '-', 3) AS order_number, 
+        c.client_name, 
+        '—' AS strain_code, 
+        o.description AS product_name, 
+        o.total AS selling_price
+    FROM orders o
+    JOIN clients c ON o.client_id = c.id
+    ORDER BY o.id DESC
+");
 ?>
+
+<style>
+.actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+.btn-action {
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.2s ease;
+    text-align: center;
+}
+.btn-invoice { background: #4CAF50; color: white !important; }
+.btn-invoice:hover { background: #439a46; }
+
+.btn-edit { background: #2196F3; color: white !important; }
+.btn-edit:hover { background: #0b7dda; }
+
+.btn-delete { background: #f44336; color: white !important; }
+.btn-delete:hover { background: #da190b; }
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+.form-row > div {
+    display: flex;
+    flex-direction: column;
+}
+.form-row label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+.form-row input,
+.form-row select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+#lineItemsTable input,
+#lineItemsTable select {
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+</style>
 
 <div class="page-title">
     <div>
@@ -76,7 +155,6 @@ $orders = $conn->query("\n    SELECT o.*, c.client_name, s.strain_code, s.produc
 
 <script>
 <?php 
-// Convert stock items to array for JavaScript
 $stockItems->data_seek(0);
 $stockArray = [];
 while ($s = $stockItems->fetch_assoc()) {
@@ -200,45 +278,10 @@ document.getElementById('batchOrderForm').addEventListener('submit', function(e)
     this.submit();
 });
 
-// Add first line item on page load
 window.addEventListener('load', function() {
     addLineItem();
 });
 </script>
-
-<style>
-.form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    margin-bottom: 20px;
-}
-
-.form-row > div {
-    display: flex;
-    flex-direction: column;
-}
-
-.form-row label {
-    font-weight: bold;
-    margin-bottom: 5px;
-}
-
-.form-row input,
-.form-row select {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
-}
-
-#lineItemsTable input,
-#lineItemsTable select {
-    padding: 6px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-}
-</style>
 
 <script>
 function toggleDetails(button) {
@@ -262,7 +305,6 @@ function toggleDetails(button) {
     <table>
         <tr><th>Order</th><th>Client</th><th>Date</th><th>Items</th><th>Total</th><th>Status</th><th>Actions</th></tr>
         <?php 
-        // Group orders by order_number
         $ordersByNumber = [];
         $orders->data_seek(0);
         while ($o = $orders->fetch_assoc()) {
@@ -273,7 +315,6 @@ function toggleDetails(button) {
             $ordersByNumber[$orderNum][] = $o;
         }
         
-        // Display grouped orders
         foreach ($ordersByNumber as $orderNum => $orderItems): 
             $firstItem = $orderItems[0];
             $itemCount = count($orderItems);
@@ -281,11 +322,48 @@ function toggleDetails(button) {
             foreach ($orderItems as $item) {
                 $orderTotal += (float)$item['total'];
             }
+
+            // DYNAMIC SHORTCODE GENERATOR BLOCK
+            $cName = $firstItem['client_name'] ?? '';
+            $cId = (int)($firstItem['client_id'] ?? 0);
+            $oId = (int)($firstItem['id'] ?? 0);
+
+            if (stripos($cName, 'high5') !== false) {
+                $prefix = 'Hi5';
+                $words = explode(' ', $cName);
+                $lastWord = strtoupper(end($words));
+                if ($lastWord !== 'CANNA' && $lastWord !== 'HIGH5') {
+                    $consonants = preg_replace('/[AEIOU\s]/', '', $lastWord);
+                    $prefix .= substr($consonants, 0, 3);
+                } else {
+                    $prefix .= 'GEN';
+                }
+            } else {
+                $words = explode(' ', preg_replace('/[^A-Za-z0-9 ]/', '', $cName));
+                $prefix = '';
+                foreach ($words as $w) {
+                    if (!empty($w) && strtoupper($w) !== 'CANNA') {
+                        $prefix .= ucfirst(substr($w, 0, 2));
+                    }
+                }
+                if (empty($prefix)) { $prefix = "CLN"; }
+            }
+
+            $seqStmt = $conn->prepare("
+                SELECT COUNT(DISTINCT SUBSTRING_INDEX(order_number, '-', 3)) as order_sequence 
+                FROM orders 
+                WHERE client_id = ? AND id <= ?
+            ");
+            $seqStmt->bind_param('ii', $cId, $oId);
+            $seqStmt->execute();
+            $seqResult = $seqStmt->get_result()->fetch_assoc();
+            $seqNo = (int)($seqResult['order_sequence'] ?? 1);
+            $cleanCodeDisplay = $prefix . str_pad($seqNo, 3, '0', STR_PAD_LEFT);
         ?>
             <tr>
-                <td><?= h($firstItem['order_number']) ?></td>
+                <td><strong><?= h($cleanCodeDisplay) ?></strong></td>
                 <td><?= h($firstItem['client_name']) ?></td>
-                <td><?= h($firstItem['order_date']) ?></td>
+                <td><?= h($firstItem['order_date'] ?? '—') ?></td>
                 <td><?= $itemCount ?> item<?= $itemCount > 1 ? 's' : '' ?> <button type="button" onclick="toggleDetails(this)" style="background: none; border: none; cursor: pointer; color: #2196F3; font-weight: bold;">▼</button></td>
                 <td><?= money($orderTotal) ?></td>
                 <td>
@@ -299,18 +377,24 @@ function toggleDetails(button) {
                     </form>
                 </td>
                 <td class="actions">
-                    <a href="/hvf-app/api/invoices_create.php?order_id=<?= h($firstItem['id']) ?>">Invoice</a>
-                    <a href="/hvf-app/pages/order_edit.php?id=<?= h($firstItem['id']) ?>">Edit</a>
-                    <a href="/hvf-app/api/orders_delete.php?id=<?= h($firstItem['id']) ?>" onclick="return confirm('Delete this order?')">Delete</a>
+                  <a class="btn-action btn-invoice" href="/hvf-app/api/invoices_create.php?order_id=<?= h($firstItem['id']) ?>">
+                    <i class="fa fa-leaf"></i> Invoice
+                  </a>
+                  <a class="btn-action btn-edit" href="/hvf-app/pages/order_edit.php?id=<?= h($firstItem['id']) ?>">
+                    <i class="fa fa-pencil"></i> Edit
+                  </a>
+                <a class="btn-action btn-delete" href="/hvf-app/api/orders_delete.php?id=<?= h($firstItem['id']) ?>" onclick="return confirm('Delete this order?')">
+                    <i class="fa fa-trash"></i> Delete
+                </a>
                 </td>
+
             </tr>
-            <!-- Show items detail row (collapsible) -->
             <tr style="background-color: #f9f9f9; display: none;" class="order-details">
                 <td colspan="7" style="padding: 10px 15px;">
                     <strong>Items:</strong>
                     <ul style="margin: 5px 0; padding-left: 20px;">
                         <?php foreach ($orderItems as $item): ?>
-                            <li><?= h($item['strain_code']) ?> - <?= h($item['product_name'] ?? 'N/A') ?> | <?= number_format((float)$item['quantity'], 2) ?>g @ <?= money($item['selling_price']) ?>/g = <?= money($item['total']) ?></li>
+                            <li><?= h($item['strain_code']) ?> - <?= h($item['product_name'] ?? 'General Item Blueprint') ?> | <?= number_format((float)($item['quantity'] ?? 1), 2) ?>g = <?= money($item['total']) ?></li>
                         <?php endforeach; ?>
                     </ul>
                 </td>

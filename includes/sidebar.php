@@ -1,7 +1,8 @@
 <div class="sidebar" id="sidebar">
     <div class="logo-area">
-        <img src="/hvf-app/images/HVF-Logo.png" alt="HVF Logo">
-        
+        <div class="logo-area" style="width: 100%; display: flex; justify-content: center; padding: 15px 0;">
+    <img src="/hvf-app/images/HVF-Logo.png" alt="Logo" style="max-width: 140px !important; width: 100% !important; height: auto !important; display: block; object-fit: contain;">
+</div>
     </div>
 
     <ul>

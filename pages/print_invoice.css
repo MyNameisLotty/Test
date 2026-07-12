@@ -1,0 +1,46 @@
+/* /hvf-app/pages/print_invoice.css */
+
+/* This stylesheet is ONLY for printing invoices */
+
+@page {
+    size: A4;
+    margin: 0; /* This removes the browser's default header and footer */
+}
+
+@media print {
+    /* Reset the body for a clean print page */
+    body {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #fff !important;
+        width: 100% !important;
+    }
+
+    /* Hide non-essential layout elements */
+    .sidebar, .main-content .header, .no-print, .page-title {
+        display: none !important;
+    }
+
+    /* Ensure the main content wrapper and page content fill the space */
+    .main-content, .page-content {
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    /* Make the invoice card the primary visible element */
+    .invoice-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 1.5rem !important; /* Add some padding inside the page */
+        margin: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Make the logo significantly larger on the printed PDF */
+    .invoice-header .logo-container img {
+        max-width: 450px !important; /* A large but reasonable size for A4 */
+    }
+}

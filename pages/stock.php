@@ -22,7 +22,7 @@ while ($str = $strainsForForm->fetch_assoc()) {
 <div class="page-title">
     <div>
         <h2>Stock Management</h2>
-        <p>Add and manage your flower stock inventory.</p>
+        <p>Add and manage your stock inventory.</p>
     </div>
 </div>
 

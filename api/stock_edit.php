@@ -38,9 +38,13 @@ $stmt = $conn->prepare("UPDATE stock
 $stmt->bind_param("isssddi", $category_id, $strain_code, $grow_type, $product_name, $quantity, $selling_price, $orderId);
 
 if ($stmt->execute()) {
-    echo json_encode(["success" => true]);
+    // Redirect back to the stock view page with a success message flag
+header("Location: /hvf-app/pages/stock.php?success=1");
+exit();
 } else {
     http_response_code(500);
-    echo json_encode(["error" => "Failed to update stock item"]);
+    // Redirect back to the stock view page with a success message flag
+header("Location: /hvf-app/pages/stock.php?success=1");
+exit();
 }
 ?>

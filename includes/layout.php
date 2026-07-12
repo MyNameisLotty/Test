@@ -5,91 +5,74 @@ $content = $content ?? '';
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>HVF Business Manager</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<<head>
+  <meta charset="UTF-8">
+  <title>HVF Business Manager</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Global Styles -->
-    <link rel="stylesheet" href="/hvf-app/css/style.css">
-    <link rel="icon" type="image/x-icon" href="/hvf-app/images/favicon-new.ico?v=1">
-   
-  <style>
-/* Absolute fix to constrain ANY image inside the sidebar layout */
-.sidebar img,
-aside img,
-[class*="sidebar"] img,
-.logo-area img {
-    max-width: 150px !important;
-    width: 100% !important;
-    height: auto !important;
-    object-fit: contain !important;
-    display: block;
-    margin: 10px auto;
-}
-
-/* Ensure sidebar doesn't collapse */
-.sidebar {
-    flex-shrink: 0;
-    min-width: 250px;
-}
-</style>
+  <!-- Global Styles -->
+  <link rel="stylesheet" href="/hvf-app/css/style.css">
+  <link rel="icon" type="image/x-icon" href="/hvf-app/images/favicon.png">
+  <link rel="stylesheet" href="/hvf-app/css/fontawesome-web/css/all.min.css">
 </head>
 
+<script>
+  const menuBtn = document.querySelector('.menu-btn');
+  const sidebar = document.querySelector('.sidebar');
+
+  menuBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('active');
+  });
+</script>
+
+
 <body>
-
-    <!-- SIDEBAR -->
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <!-- logo + menu -->
     <?php include __DIR__ . '/sidebar.php'; ?>
+  </div>
 
-    <!-- MAIN CONTENT WRAPPER -->
-    <div class="main-content">
+  <!-- Overlay for mobile -->
+  <div class="overlay"></div>
 
-        <!-- TOP BAR -->
-        <?php include __DIR__ . '/header.php'; ?>
-
-        <!-- PAGE CONTENT -->
-        <div class="page-content">
-            <?= $content ?>
-        </div>
-
+  <!-- MAIN CONTENT WRAPPER -->
+  <div class="main-content">
+    <!-- TOP BAR -->
+    <div class="topbar">
+      <button class="menu-btn">
+        <i class="fas fa-bars"></i>
+      </button>
+      <h1>Dashboard</h1>
     </div>
 
-    <!-- OPTIONAL FOOTER -->
-    <?php
-    if (file_exists(__DIR__ . '/footer.php')) {
-        include __DIR__ . '/footer.php';
-    }
-    ?>
+    <!-- PAGE CONTENT -->
+    <div class="page-content">
+      <?= $content ?>
+    </div>
+  </div>
 
-    <!-- Global JS -->
-    <script src="/hvf-app/js/app.js"></script>
+  <!-- OPTIONAL FOOTER -->
+  <?php if (file_exists(__DIR__ . '/footer.php')) include __DIR__ . '/footer.php'; ?>
 
-    <!-- Stock Form Auto-Fill Logic -->
-    <script>
-    function fetchStrainDetails() {
-        let strainId = document.getElementById('strain_code')?.value;
-        let growType = document.getElementById('grow_type')?.value;
+  <!-- Global JS -->
+  <script src="/hvf-app/js/app.js"></script>
 
-        if (strainId && growType) {
-            fetch('/hvf-app/api/strain_lookup.php?id=' + strainId + '&grow_type=' + growType)
-            .then(res => res.json())
-            .then(data => {
-                if (data.product_name) {
-                    document.getElementById('product_name').value = data.product_name;
-                    document.getElementById('selling_price').value = data.default_price;
-                }
-            });
-        }
-    }
+  <!-- Sidebar toggle logic -->
+  <script>
+    const menuBtn = document.querySelector('.menu-btn');
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.querySelector('.overlay');
 
-    document.addEventListener('DOMContentLoaded', () => {
-        let strainSelect = document.getElementById('strain_code');
-        let growSelect   = document.getElementById('grow_type');
-
-        if (strainSelect) strainSelect.addEventListener('change', fetchStrainDetails);
-        if (growSelect)   growSelect.addEventListener('change', fetchStrainDetails);
+    menuBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('active');
     });
-    </script>
 
+    overlay.addEventListener('click', () => {
+      sidebar.classList.remove('active');
+    });
+  </script>
 </body>
+
 </html>
+

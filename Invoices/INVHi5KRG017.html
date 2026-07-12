@@ -1,0 +1,331 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <title>HVF Business Manager</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Global Styles -->
+    <link rel="stylesheet" href="/hvf-app/css/style.css">
+    <link rel="icon" type="image/x-icon" href="/hvf-app/images/favicon.png">
+   
+  <style>
+/* Absolute fix to constrain ANY image inside the sidebar layout */
+.sidebar img,
+aside img,
+[class*="sidebar"] img,
+.logo-area img {
+    max-width: 150px !important;
+    width: 100% !important;
+    height: auto !important;
+    object-fit: contain !important;
+    display: block;
+    margin: 10px auto;
+}
+
+/* Ensure sidebar doesn't collapse */
+.sidebar {
+    flex-shrink: 0;
+    min-width: 250px;
+}
+</style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+    <div class="logo-area">
+        <div class="logo-area" style="width: 100%; display: flex; justify-content: center; padding: 15px 0;">
+    <img src="/hvf-app/images/HVF-Logo.png" alt="Logo" style="max-width: 140px !important; width: 100% !important; height: auto !important; display: block; object-fit: contain;">
+</div>
+    </div>
+
+    <ul>
+        <li><a href="/hvf-app/pages/dashboard.php">Dashboard</a></li>
+        <li><a href="/hvf-app/pages/clients.php">Clients</a></li>
+        <li><a href="/hvf-app/pages/orders.php">Orders</a></li>
+        <li><a href="/hvf-app/pages/invoices.php">Invoices</a></li>
+        <li><a href="/hvf-app/pages/stock.php">Stock</a></li>
+        <li><a href="/hvf-app/pages/finances.php">Finances</a></li>
+        <li><a href="/hvf-app/pages/reports.php">Reports</a></li>
+    </ul>
+</div>
+
+    <!-- MAIN CONTENT WRAPPER -->
+    <div class="main-content">
+
+        <!-- TOP BAR -->
+        <link rel="icon" type="image/png" href="/hvf-app/images/favicon.png">
+
+
+<div class="topbar">
+    <button class="menu-btn" onclick="toggleSidebar()" aria-label="Toggle menu">?</button>
+    <h1>HVF Business Manager</h1>
+</div>
+
+        <!-- PAGE CONTENT -->
+        <div class="page-content">
+            
+
+
+<link rel="stylesheet" href="/hvf-app/pages/print_invoice.css" media="print">
+
+<style>
+    /* ---------------------------------------------------
+       SCREEN STYLES (Fixed text and layout visibility)
+    --------------------------------------------------- */
+    .invoice-card {
+        max-width: 850px;
+        margin: 20px auto;
+        padding: 40px;
+        background: #1e1e1e; /* Changed back to dark background for screen visibility */
+        color: #ffffff;      /* Forces text to show up bright white on your screen */
+    }
+    .invoice-card td, .invoice-card th, .invoice-card h2, .invoice-card h3, .invoice-card p {
+        color: #ffffff !important; /* Ensures your strain data doesn't render invisible */
+    }
+    .invoice-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 25px;
+    }
+    .invoice-header .logo-container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+    }
+    .invoice-header .logo-container img {
+        width: 450px; 
+        max-width: 100%;
+        height: auto;
+    }
+    .invoice-header .invoice-details {
+        text-align: right;
+    }
+    .invoice-card table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 25px 0;
+    }
+    .invoice-card th, 
+    .invoice-card td {
+        padding: 10px;
+        border-bottom: 1px solid #333;
+    }
+    .text-right {
+        text-align: right !important;
+    }
+    .invoice-total {
+        text-align: right;
+        margin-top: 20px;
+    }
+    .no-print {
+        display: block;
+    }
+
+    /* ---------------------------------------------------
+   /* ---------------------------------------------------
+       PRINT STYLES (Only applies when you save the A4 PDF)
+    --------------------------------------------------- */
+    @media print {
+        @page {
+            size: a4 portrait;
+            /* Setting margin to 0 completely disables the browser's default headers and footers */
+            margin: 0 !important; 
+        }
+
+        nav, .sidebar, .top-nav, button, .no-print, header, footer {
+            display: none !important;
+        }
+
+        /* Flipping the text inverse ONLY for printing to save printer ink */
+        body, .main-content, .card, .invoice-card {
+            background: #ffffff !important;
+            color: #000000 !important;
+            box-shadow: none !important;
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+
+        /* Add standard print padding directly to the card container so your text doesn't touch the edge of the paper */
+        .invoice-card {
+            padding: 15mm 20mm 15mm 20mm !important;
+            margin: 0 !important;
+        }
+
+        /* Forces table text to print pure black on white paper */
+        .invoice-card td, .invoice-card th, .invoice-card h2, .invoice-card h3, .invoice-card p {
+            color: #000000 !important; 
+        }
+
+        .invoice-header .logo-container img {
+            width: 320px !important; 
+        }
+
+        .invoice-card table {
+            width: 100% !important;
+            table-layout: fixed;
+            margin: 15px 0 !important;
+        }
+        
+        .invoice-card th, 
+        .invoice-card td {
+            padding: 6px 4px !important;
+            border-bottom: 1px solid #ddd !important;
+        }
+
+        .text-right {
+            text-align: right !important;
+        }
+
+        tr, .banking {
+            page-break-inside: avoid !important;
+        }
+    }
+</style>
+
+<div class="card invoice-card">
+    <div class="invoice-header">
+        <div class="logo-container">
+            <img src="/hvf-app/images/HVF-Logo.png" alt="HVF Logo">
+            <p style="padding-left: 5px;"><strong>HVF Business Manager</strong></p>
+        </div>
+        <div class="invoice-details">
+            <h2>Invoice INV-00001</h2>
+            
+
+<p><strong>Order Ref:</strong> Hi5KRG017</p>
+            <p><strong>Invoice Date:</strong> 2026-07-07</p>
+            
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="split-grid">
+        <div>
+            <h3>Bill To</h3>
+            <p><strong>High5Canna - Krugersdorp</strong></p>
+            <p>06965564890</p>
+            <p></p>
+            <p>2 Leeu Street<br>
+Rant-en-Dal<br>
+Krugersdorp<br>
+1739</p>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th class="text-right" style="width: 15%;">Quantity</th>
+                <th class="text-right" style="width: 20%;">Unit Price</th>
+                <th class="text-right" style="width: 20%;">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+                            <tr>
+                    <td>[GSK-GH] Grape Stank - Greenhouse</td>
+                    <td class="text-right">80.00 g</td>
+                    <td class="text-right">R 12.00</td>
+                    <td class="text-right">R 960.00</td>
+                </tr>
+                            <tr>
+                    <td>[FOF/GH] Face on Fire - GH</td>
+                    <td class="text-right">120.00 g</td>
+                    <td class="text-right">R 12.00</td>
+                    <td class="text-right">R 1,440.00</td>
+                </tr>
+                            <tr>
+                    <td>[MND/GH] Mango Dog - GH</td>
+                    <td class="text-right">50.00 g</td>
+                    <td class="text-right">R 12.00</td>
+                    <td class="text-right">R 600.00</td>
+                </tr>
+                            <tr>
+                    <td>[PMR/GH] Permanent Marker - GH</td>
+                    <td class="text-right">50.00 g</td>
+                    <td class="text-right">R 12.00</td>
+                    <td class="text-right">R 600.00</td>
+                </tr>
+                    </tbody>
+    </table>
+
+ <h2 class="invoice-total">Total: R 3,600.00</h2>
+
+    <div class="banking">
+        <h3>Banking Details</h3>
+        <p><strong>Bank:</strong> ABSA BANK</p>
+        <p><strong>Account Name:</strong> Marc Heath</p>   
+        <p><strong>Account Number:</strong> 9098029879</p>
+        <p><strong>Branch Code:</strong> 632005</p>
+    </div>
+
+    <br>
+    <button class="no-print" onclick="window.print()">Print / Save PDF</button>
+</div>
+
+<script>
+window.addEventListener('load', function() {
+    // Uses the pre-compiled reference variable directly from your PHP setup
+    const invoiceReference = "Hi5KRG017";
+    const invoiceHtml = document.documentElement.outerHTML;
+
+    console.log("Attempting background backup for reference:", invoiceReference);
+
+    // Send payload using FormData to eliminate complex header stringification issues
+    const payload = new FormData();
+    payload.append('filename', 'INV' + invoiceReference);
+    payload.append('html', invoiceHtml);
+
+    fetch('/hvf-app/api/save_local_pdf.php', {
+        method: 'POST',
+        body: payload
+    })
+    .then(response => response.text())
+    .then(data => console.log('Local backend file backup status:', data))
+    .catch(err => console.error('Background storage system error:', err));
+});
+</script>
+
+        </div>
+
+    </div>
+
+    <!-- OPTIONAL FOOTER -->
+    <script src="/hvf-app/js/app.js"></script>
+    <!-- Global JS -->
+    <script src="/hvf-app/js/app.js"></script>
+
+    <!-- Stock Form Auto-Fill Logic -->
+    <script>
+    function fetchStrainDetails() {
+        let strainId = document.getElementById('strain_code')?.value;
+        let growType = document.getElementById('grow_type')?.value;
+
+        if (strainId && growType) {
+            fetch('/hvf-app/api/strain_lookup.php?id=' + strainId + '&grow_type=' + growType)
+            .then(res => res.json())
+            .then(data => {
+                if (data.product_name) {
+                    document.getElementById('product_name').value = data.product_name;
+                    document.getElementById('selling_price').value = data.default_price;
+                }
+            });
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        let strainSelect = document.getElementById('strain_code');
+        let growSelect   = document.getElementById('grow_type');
+
+        if (strainSelect) strainSelect.addEventListener('change', fetchStrainDetails);
+        if (growSelect)   growSelect.addEventListener('change', fetchStrainDetails);
+    });
+    </script>
+
+
+
+</body></html>

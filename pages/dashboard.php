@@ -32,12 +32,19 @@ $todaysPlanting = $conn->query("
     ORDER BY ps.id ASC
 ");
 
-// Available stock summary
+
 $stockSummary = $conn->query("
-    SELECT s.product_name, s.strain_code, s.quantity, s.selling_price, s.category_id AS category_name
+    SELECT s.product_name, s.strain_code, s.quantity, s.selling_price
     FROM stock s
+    WHERE s.quantity > 0
     ORDER BY s.strain_code, s.product_name
 ");
+
+
+// Fetch stock categories for display
+$stockCategories = $conn->query("SELECT id, name FROM stock_categories ORDER BY name"); 
+
+
 
 $orderCount    = $todaysOrders->num_rows;
 $taskCount     = $todaysTasks->num_rows;
@@ -210,7 +217,7 @@ $plantingCount = $todaysPlanting->num_rows;
 </div>
 
 
-<!-- AVAILABLE STOCK SUMMARY -->
+
 <div class="card">
     <h3>Available Stock</h3>
     <table>
@@ -218,7 +225,6 @@ $plantingCount = $todaysPlanting->num_rows;
             <tr>
                 <th>Strain</th>
                 <th>Product</th>
-                <th>Category</th>
                 <th>Quantity</th>
                 <th>Price</th>
             </tr>
@@ -228,7 +234,6 @@ $plantingCount = $todaysPlanting->num_rows;
                 <tr>
                     <td><?= h($s['strain_code']) ?></td>
                     <td><?= h($s['product_name']) ?></td>
-                    <td><?= h($s['category_name'] ?? 'Unassigned') ?></td>
                     <td><?= number_format((float)$s['quantity'], 2) ?> g</td>
                     <td><?= money($s['selling_price']) ?></td>
                 </tr>
@@ -236,6 +241,7 @@ $plantingCount = $todaysPlanting->num_rows;
         </tbody>
     </table>
 </div>
+
 
 <?php
 $content = ob_get_clean();

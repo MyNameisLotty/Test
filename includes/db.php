@@ -4,7 +4,7 @@ if ($_SERVER['HTTP_HOST'] === 'localhost' || $_SERVER['HTTP_HOST'] === '127.0.0.
     $host = 'localhost';
     $user = 'root';
     $pass = '';
-    $dbname = 'hvf_db'; 
+    $dbname = 'hvf_app'; 
 } else {
     // Live configuration (InfinityFree)
     $host = "sql203.infinityfree.com";

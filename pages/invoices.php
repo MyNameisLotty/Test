@@ -27,14 +27,14 @@ $invoices = $conn->query("\n    SELECT i.*, c.client_name, o.order_number\n    F
                 <td><?= money($i['total']) ?></td>
                 <td><span class="status-badge status-<?= h($status) ?>"><?= h(ucfirst($status)) ?></span></td>
                 <td class="actions">
-                    <a href="/hvf-app/pages/invoice_view.php?id=<?= h($i['id']) ?>">View</a>
-                    <?php if (($i['status'] ?? '') !== 'Paid'): ?>
-                        <a href="/hvf-app/api/invoices_update_status.php?id=<?= h($i['id']) ?>&status=Paid">Mark Paid</a>
-                    <?php else: ?>
-                        <a href="/hvf-app/api/invoices_update_status.php?id=<?= h($i['id']) ?>&status=Unpaid">Mark Unpaid</a>
-                    <?php endif; ?>
-                    <a href="/hvf-app/api/invoices_delete.php?id=<?= h($i['id']) ?>" onclick="return confirm('Delete this invoice?')">Delete</a>
-                </td>
+    <a class="btn-action btn-view" href="/hvf-app/pages/invoice_view.php?id=<?= h($i['id']) ?>">View</a>
+    <?php if (($i['status'] ?? '') !== 'Paid'): ?>
+        <a class="btn-action btn-paid" href="/hvf-app/api/invoices_update_status.php?id=<?= h($i['id']) ?>&status=Paid">Mark Paid</a>
+    <?php else: ?>
+        <a class="btn-action btn-unpaid" href="/hvf-app/api/invoices_update_status.php?id=<?= h($i['id']) ?>&status=Unpaid">Mark Unpaid</a>
+    <?php endif; ?>
+    <a class="btn-action btn-delete" href="/hvf-app/api/invoices_delete.php?id=<?= h($i['id']) ?>" onclick="return confirm('Delete this invoice?')">Delete</a>
+</td>
             </tr>
         <?php endwhile; ?>
     </table>
