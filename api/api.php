@@ -1,6 +1,7 @@
 <?php
 header("Content-Type: application/json");
 include 'db.php';
+include 'functions.php';
 
 $action = $_GET['action'] ?? '';
 

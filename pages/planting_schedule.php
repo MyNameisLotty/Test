@@ -258,3 +258,4 @@ $schedule = $conn->query("
 $content = ob_get_clean();
 include __DIR__ . '/../includes/layout.php';
 ?>
+            if (stripos($cName, 'high5') !== false)
